@@ -1,3 +1,7 @@
+from rest_framework import viewsets
+from home.models import CandidateHistory, Candidates
+from .serializers import CandidateHistorySerializer, CandidatesSerializer
+from rest_framework import authentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.authtoken.models import Token
@@ -28,3 +32,21 @@ class LoginViewSet(ViewSet):
         token, created = Token.objects.get_or_create(user=user)
         user_serializer = UserSerializer(user)
         return Response({"token": token.key, "user": user_serializer.data})
+
+
+class CandidatesViewSet(viewsets.ModelViewSet):
+    serializer_class = CandidatesSerializer
+    authentication_classes = (
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication,
+    )
+    queryset = Candidates.objects.all()
+
+
+class CandidateHistoryViewSet(viewsets.ModelViewSet):
+    serializer_class = CandidateHistorySerializer
+    authentication_classes = (
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication,
+    )
+    queryset = CandidateHistory.objects.all()
